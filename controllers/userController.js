@@ -62,7 +62,6 @@ async function signInController(req, res) {
           process.env.JWT_SECRET_KEY,
           {
             algorithm: "HS256",
-            expiresIn: "1h",
           }
         );
 
@@ -70,6 +69,7 @@ async function signInController(req, res) {
         res.status(200).json({
           message: "Log In successfull",
           token,
+          id: findUser[0]._id,
         });
       } else {
         res.status(401).json({

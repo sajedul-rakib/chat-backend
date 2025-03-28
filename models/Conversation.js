@@ -2,11 +2,16 @@ const mongoose = require("mongoose");
 
 const ConversationSchema = new mongoose.Schema(
   {
-    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    lastMessage: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
-    isGroup: { type: Boolean, default: false },
-    groupName: { type: String },
-    groupIcon: { type: String },
+    owner: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+    participant: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+    lastMessage: { type: String, default: null },
+    lastUpdate: { type: Date, default: Date.now() },
   },
   { timestamps: true }
 );

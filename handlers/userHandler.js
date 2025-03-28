@@ -15,6 +15,7 @@ const {
 //User model
 const User = require("../models/User");
 
+//user Router
 const userRouter = express.Router();
 
 //SIGN UP USER
@@ -41,6 +42,4 @@ userRouter.get("/userDetail", checkLogIn, async (req, res) => {
   }
 });
 
-module.exports = {
-  userRouter,
-};
+module.exports = userRouter;

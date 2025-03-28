@@ -9,9 +9,13 @@ function notFoundError(req, res, next) {
 function defalutErrorHandler(err, req, res, next) {
   const error =
     process.env.NODE_ENV === "development" ? err : { message: err.message };
-  res.status(err.status).json({
+  res.status(err.status || 500).json({
     status: err.status,
-    error,
+    errors: {
+      common: {
+        error,
+      },
+    },
   });
 }
 

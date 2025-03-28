@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema(
     },
     profilePic: { type: String, default: "" },
     status: { type: String, enum: ["online", "offline"], default: "offline" },
+    fcmToken: { type: String, default: "" },
     lastSeen: { type: Date, default: Date.now },
   },
   { timestamps: true }

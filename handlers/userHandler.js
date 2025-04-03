@@ -7,9 +7,11 @@ const {
   userValidation,
   addUserValidationHandler,
 } = require("../middlewares/user/userValidation");
+const avatarUpload = require("./../middlewares/user/avaterUpload");
 const {
   singUpController,
   signInController,
+  getUserDataController,
 } = require("../controllers/userController");
 
 //User model
@@ -21,6 +23,7 @@ const userRouter = express.Router();
 //SIGN UP USER
 userRouter.post(
   "/signup",
+  avatarUpload,
   userValidation,
   addUserValidationHandler,
   singUpController
@@ -30,16 +33,6 @@ userRouter.post(
 userRouter.post("/signin", signInController);
 
 //GET USER DETAILS
-userRouter.get("/userDetail", checkLogIn, async (req, res) => {
-  try {
-    const user = await User.findById(req.userId, { password: 0, __v: 0 });
-    res.status(200).json({
-      message: "Ok",
-      user,
-    });
-  } catch (err) {
-    res.json({ err });
-  }
-});
+userRouter.post("/user-detail", checkLogIn, getUserDataController);
 
 module.exports = userRouter;

@@ -3,11 +3,10 @@ const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 const User = require("../models/User");
 const escapeKey = require("../utilities/escape");
+
 //get conversation list which only add you
 async function getFriendList(req, res) {
   try {
-    console.log(req.userId);
-
     const response = await Conversation.find({
       $or: [
         {
@@ -63,8 +62,11 @@ async function createConversation(req, res) {
     });
     const result = await createConversation.save();
 
+    await result.populate(["owner", "participant"]);
+
     res.status(200).json({
       msg: "Conversation was created successfully",
+      data: result,
     });
   } catch (err) {
     res.status(500).json({
@@ -89,6 +91,15 @@ async function sendMessage(req, res) {
     const result = await createMessage.save();
 
     //emit new message
+    global.io.emit("new_message", {
+      data: createMessage,
+    });
+
+    //update the last message
+    const updateMsg = await Conversation.updateOne(
+      { _id: conversationId },
+      { $set: { lastMessage: result.msg } }
+    );
 
     res.status(200).json({
       msg: "Message sent successfully",
@@ -138,12 +149,9 @@ async function searchUser(req, res) {
         "^" + escapeKey(keyword) + "$",
         "i"
       );
-      const result = await User.find(
-        {
-          $or: [{ fullName: name_search_regex }, { email: email_search_regex }],
-        },
-        "fullName profilePic"
-      );
+      const result = await User.find({
+        $or: [{ fullName: name_search_regex }, { email: email_search_regex }],
+      });
 
       res.status(200).json({
         data: result,

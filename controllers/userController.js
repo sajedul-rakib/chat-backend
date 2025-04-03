@@ -1,6 +1,8 @@
 //external package
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const { unlink } = require("fs");
 
 //internal package
 const User = require("../models/User");
@@ -9,6 +11,12 @@ const User = require("../models/User");
 async function singUpController(req, res) {
   try {
     const { fullName, email, password, gender } = req.body;
+    const profilePic =
+      req.files.length > 0
+        ? `${process.env.APP_URL}/public/uploads/avatars/${req.files[0].filename}`
+        : "";
+
+    console.log(profilePic);
 
     //hashing password
     const hashPassword = await bcrypt.hash(password, 10);
@@ -19,6 +27,7 @@ async function singUpController(req, res) {
       email,
       gender,
       password: hashPassword,
+      profilePic: profilePic,
     });
 
     //save the user
@@ -28,6 +37,9 @@ async function singUpController(req, res) {
       message: "Sign up successfully",
     });
   } catch (err) {
+    //delete the user avatars if error happens
+    const filename = req.files[0].filename;
+    unlink(path.join(__dirname, "../public/uploads/avatars", filename));
     res.status(401).json({
       errors: {
         common: {
@@ -90,17 +102,37 @@ async function signInController(req, res) {
       });
     }
   } catch (err) {
+    console.log(err);
     res.status(401).json({
       errors: {
         common: {
-          msg: "Authentication failed",
+          msg: err,
         },
       },
     });
   }
 }
 
+//get user data
+async function getUserDataController(req, res) {
+  try {
+    const findUser = await User.findById(req.body.id);
+
+    res.status(200).json({
+      data: findUser,
+    });
+  } catch (err) {
+    res.status(400).json({
+      errors: {
+        common: {
+          msg: err,
+        },
+      },
+    });
+  }
+}
 module.exports = {
   singUpController,
   signInController,
+  getUserDataController,
 };

@@ -5,7 +5,6 @@ const { createServer } = require("http");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
 
 //internal package
 const {
@@ -17,6 +16,7 @@ const path = require("path");
 //router
 const userRouter = require("./handlers/userHandler");
 const inboxRouter = require("./handlers/inboxHandler");
+const notificationRouter = require("./handlers/notifcationHandler");
 
 //express applicaton
 const app = express();
@@ -49,14 +49,11 @@ app.use(express.json());
 app.use(cors());
 
 //static file
-app.use(express.static(path.join(__dirname, "public")));
-
-//cookie parser
-app.use(cookieParser(process.env.COOKIE_SECRET));
-
+app.use("/public", express.static(path.join(__dirname, "public")));
 //routing setup
 app.use("/", userRouter);
 app.use("/", inboxRouter);
+app.use("/", notificationRouter);
 
 //404 - not found error handler
 app.use(notFoundError);
@@ -64,15 +61,18 @@ app.use(notFoundError);
 //default error handler
 app.use(defalutErrorHandler);
 
-io.on("connection", (socket) => {
-  console.log(`✅ Client connected: ${socket.id}`);
+const PORT = process.env.PORT || 3000;
 
-  socket.on("disconnect", () => {
-    console.log(`❌ Client disconnected: ${socket.id}`);
+io.on("connection", (socket) => {
+  socket.on("user_online", (data) => {
+    console.log(data);
+  });
+
+  socket.on("user_offline", (data) => {
+    console.log(data);
   });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, "0.0.0.0", () => {
+server.listen(PORT, () => {
   log(`the server running on ${PORT} port`);
 });

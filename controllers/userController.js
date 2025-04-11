@@ -11,9 +11,14 @@ const User = require("../models/User");
 async function singUpController(req, res) {
   try {
     const { fullName, email, password, gender } = req.body;
+    // const profilePic =
+    //   req.files.length > 0
+    //     ? `${process.env.APP_URL}/public/uploads/avatars/${req.files[0].filename}`
+    //     : "";
+
     const profilePic =
       req.files.length > 0
-        ? `${process.env.APP_URL}/public/uploads/avatars/${req.files[0].filename}`
+        ? `/public/uploads/avatars/${req.files[0].filename}`
         : "";
 
     console.log(profilePic);
@@ -53,7 +58,7 @@ async function singUpController(req, res) {
 //sign in controller
 async function signInController(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
     //find user by email
     const findUser = await User.find({ email: email });
     if (findUser && findUser.length > 0) {
@@ -76,6 +81,8 @@ async function signInController(req, res) {
             algorithm: "HS256",
           }
         );
+        //save user device toke while we want to send notification we can use this token [FCMTOKEN]
+        await User.updateOne({ email: email }, { fcmToken: fcmToken });
 
         //response
         res.status(200).json({

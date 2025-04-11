@@ -8,7 +8,7 @@ const {
 const notificationRouter = express.Router();
 
 //send notification
-notificationRouter.post("/send-notification", checkLogIn, sendNotification);
+// notificationRouter.post("/send-notification", checkLogIn, sendNotification);
 
 //get all notification
 notificationRouter.get("/get-notification", checkLogIn, getNotification);

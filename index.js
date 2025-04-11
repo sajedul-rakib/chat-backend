@@ -13,11 +13,6 @@ const {
 } = require("./middlewares/common/errorMiddleware");
 const path = require("path");
 
-//router
-const userRouter = require("./handlers/userHandler");
-const inboxRouter = require("./handlers/inboxHandler");
-const notificationRouter = require("./handlers/notifcationHandler");
-
 //express applicaton
 const app = express();
 const server = createServer(app);
@@ -50,6 +45,12 @@ app.use(cors());
 
 //static file
 app.use("/public", express.static(path.join(__dirname, "public")));
+
+//router
+const userRouter = require("./handlers/userHandler");
+const inboxRouter = require("./handlers/inboxHandler");
+const notificationRouter = require("./handlers/notifcationHandler");
+
 //routing setup
 app.use("/", userRouter);
 app.use("/", inboxRouter);
@@ -63,15 +64,15 @@ app.use(defalutErrorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-io.on("connection", (socket) => {
-  socket.on("user_online", (data) => {
-    console.log(data);
-  });
+// io.on("connection", (socket) => {
+//   socket.on("join_chat", ({ conversationId, userId }) => {
+//     userSession[userId] = conversationId;
+//   });
 
-  socket.on("user_offline", (data) => {
-    console.log(data);
-  });
-});
+//   socket.on("leave_chat", ({ userId }) => {
+//     console.log(userId);
+//   });
+// });
 
 server.listen(PORT, () => {
   log(`the server running on ${PORT} port`);

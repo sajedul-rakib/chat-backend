@@ -19,15 +19,16 @@ global.io.on("connection", (socket) => {
     if (index < 0) {
       userOnline.push(userId);
     }
+
     global.io.emit("online_user", userOnline);
   });
 
   socket.on("user_offline", ({ userId }) => {
     let indexItem = userOnline.indexOf(userId);
-    if (indexItem != -1) {
+
+    if (indexItem >= 0) {
       userOnline.splice(indexItem, 1);
     }
-
     global.io.emit("online_user", userOnline);
   });
 });
@@ -96,17 +97,14 @@ async function getUser(req, res) {
 async function createConversation(req, res) {
   try {
     const findTheUserExistWithTheUser = await Conversation.find({
-      $or: [
-        {
-          owner: req.body._id,
-        },
-        {
-          participant: req.body._id,
-        },
-      ],
+      owner: req.userId,
+      participant: req.body._id,
     });
+    console.log(findTheUserExistWithTheUser);
 
     if (findTheUserExistWithTheUser && findTheUserExistWithTheUser.length > 0) {
+      // console.log(findTheUserExistWithTheUser);
+
       res.status(406).json({
         errors: {
           common: {

@@ -1,5 +1,5 @@
-*.env
+.env
 public
-.html
+*.html
 *.josn
 controllers/notification/serviceAccountKey.json

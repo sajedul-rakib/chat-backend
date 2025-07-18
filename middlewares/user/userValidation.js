@@ -28,6 +28,7 @@ const userValidation = [
     .withMessage(
       "Password must be at least 8 characters logn should contain 1 lowercase 1 upercase 1 number and 1 symbol"
     ),
+  check("gender").isLength({ min: 1 }).withMessage("Enter your gender"),
 ];
 
 const addUserValidationHandler = function (req, res, next) {

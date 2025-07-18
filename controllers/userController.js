@@ -21,8 +21,6 @@ async function singUpController(req, res) {
         ? `/public/uploads/avatars/${req.files[0].filename}`
         : "";
 
-    console.log(profilePic);
-
     //hashing password
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -42,7 +40,6 @@ async function singUpController(req, res) {
       message: "Sign up successfully",
     });
   } catch (err) {
-    //delete the user avatars if error happens
     if (req.files) {
       const filename = req.files[0].filename;
       unlink(path.join(__dirname, "../public/uploads/avatars", filename));

@@ -1,5 +1,4 @@
 .env
-public
 *.html
 *.josn
 node_modules/

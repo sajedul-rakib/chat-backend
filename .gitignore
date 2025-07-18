@@ -1,0 +1,6 @@
+.env
+public
+*.html
+*.josn
+node_modules/
+controllers/notification/serviceAccountKey.json

@@ -43,8 +43,10 @@ async function singUpController(req, res) {
     });
   } catch (err) {
     //delete the user avatars if error happens
-    const filename = req.files[0].filename;
-    unlink(path.join(__dirname, "../public/uploads/avatars", filename));
+    if (req.files) {
+      const filename = req.files[0].filename;
+      unlink(path.join(__dirname, "../public/uploads/avatars", filename));
+    }
     res.status(401).json({
       errors: {
         common: {

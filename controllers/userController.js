@@ -47,6 +47,8 @@ async function singUpController(req, res) {
       const filename = req.files[0].filename;
       unlink(path.join(__dirname, "../public/uploads/avatars", filename));
     }
+    console.log(err);
+
     res.status(401).json({
       errors: {
         common: {

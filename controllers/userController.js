@@ -16,10 +16,12 @@ async function singUpController(req, res) {
     //     ? `${process.env.APP_URL}/public/uploads/avatars/${req.files[0].filename}`
     //     : "";
 
-    const profilePic =
-      req.files.length > 0
-        ? `/public/uploads/avatars/${req.files[0].filename}`
-        : "";
+    if (req.files) {
+      const profilePic =
+        req.files.length > 0
+          ? `/public/uploads/avatars/${req.files[0].filename}`
+          : "";
+    }
 
     //hashing password
     const hashPassword = await bcrypt.hash(password, 10);

@@ -16,8 +16,10 @@ async function singUpController(req, res) {
     //     ? `${process.env.APP_URL}/public/uploads/avatars/${req.files[0].filename}`
     //     : "";
 
+    let profilePic = "";
+
     if (req.files) {
-      const profilePic =
+      profilePic =
         req.files.length > 0
           ? `/public/uploads/avatars/${req.files[0].filename}`
           : "";

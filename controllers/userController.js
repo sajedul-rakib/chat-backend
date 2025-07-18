@@ -52,6 +52,7 @@ async function singUpController(req, res) {
     res.status(401).json({
       errors: {
         common: {
+          error: err,
           msg: err.message,
         },
       },

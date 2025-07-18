@@ -64,15 +64,28 @@ app.use(defalutErrorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-// io.on("connection", (socket) => {
-//   socket.on("join_chat", ({ conversationId, userId }) => {
-//     userSession[userId] = conversationId;
-//   });
+//check user online or offline
 
-//   socket.on("leave_chat", ({ userId }) => {
-//     console.log(userId);
-//   });
-// });
+let onlineUsers = new Map();
+io.on("connection", (socket) => {
+  socket.on("online_user", ({ userId }) => {
+    onlineUsers.set(userId, socket.id);
+
+    //notify others
+    socket.broadcast.emit("update_user_status", { userId, status: "online" });
+  });
+
+  // When user disconnects
+  socket.on("disconnect", () => {
+    for (const [userId, sId] of onlineUsers.entries()) {
+      if (sId === socket.id) {
+        onlineUsers.delete(userId);
+        io.emit("update_user_status", { userId, status: "offline" });
+        break;
+      }
+    }
+  });
+});
 
 server.listen(PORT, () => {
   log(`the server running on ${PORT} port`);

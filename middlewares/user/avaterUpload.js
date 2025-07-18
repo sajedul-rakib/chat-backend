@@ -1,14 +1,15 @@
-const uploader = require("../../utilities/singleUploader");
+// const uploader = require("../../utilities/singleUploader");
+const uploader = require("../../utilities/cloudinaryUploader");
 
 function avatarUpload(req, res, next) {
-  const upload = uploader(
-    ["image/jpeg", "image/jpg", "image/png"],
-    1024 * 1024 * 5,
-    "Only .jpg, jpeg or .png format allowed!"
-  );
+  // const upload = uploader(
+  //   ["image/jpeg", "image/jpg", "image/png"],
+  //   1024 * 1024 * 5,
+  //   "Only .jpg, jpeg or .png format allowed!"
+  // );
 
   // call the middleware function
-  upload.any()(req, res, (err) => {
+  uploader.any()(req, res, (err) => {
     if (err) {
       console.log(err);
       res.status(500).json({

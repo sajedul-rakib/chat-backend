@@ -1,16 +1,17 @@
 // external imports
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 const createError = require("http-errors");
 
-function uploader(
-  subfolder_path,
-  allowed_file_types,
-  max_file_size,
-  error_msg
-) {
+function uploader(allowed_file_types, max_file_size, error_msg) {
   // File upload folder
-  const UPLOADS_FOLDER = `${__dirname}/../public/uploads/${subfolder_path}/`;
+  const UPLOADS_FOLDER = `${__dirname}/../public/uploads/avatars/`;
+
+  if (!fs.existsSync(UPLOADS_FOLDER)) {
+    fs.mkdirSync(UPLOADS_FOLDER, { recursive: true });
+    console.log("✅ Upload directory created");
+  }
 
   // define the storage
   const storage = multer.diskStorage({
